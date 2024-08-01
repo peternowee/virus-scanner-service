@@ -53,7 +53,7 @@ app.post(
         .map((insert) => insert.subject.value);
 
       const logicalFilesInDelta = filesInDelta.filter(
-        (fileIRI) => fileIRI.slice(0, 8) !== 'share://',
+        (fileIRI) => !fileIRI.startsWith('share://'),
       );
 
       if (!logicalFilesInDelta.length) {
@@ -186,7 +186,7 @@ app.post(
         return res.status(400).send('`file` not a non-empty String');
       }
 
-      if (logicalFileIRI.slice(0, 8) === 'share://') {
+      if (logicalFileIRI.startsWith('share://')) {
         // TODO: Be flexible and lookup the logical file IRI? Can we assume
         //       that, even if the physical file IRI exists in multiple graphs,
         //       they will all be related to the same logical file IRI?
@@ -254,10 +254,9 @@ async function scanFile(fileIRI) {
   let file;
 
   try {
-    physicalFileIRI =
-      fileIRI.slice(0, 8) === 'share://'
-        ? fileIRI
-        : await getPhysicalFileIRI(fileIRI);
+    physicalFileIRI = fileIRI.startsWith('share://')
+      ? fileIRI
+      : await getPhysicalFileIRI(fileIRI);
     if (physicalFileIRI === null) {
       throw new Error('No physical file IRI found for: ' + fileIRI);
     }

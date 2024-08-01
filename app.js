@@ -16,13 +16,14 @@ import NodeClam from 'clamscan';
 
 const STIX_MALWARE_RESULT_OV = ['benign', 'suspicious', 'malicious', 'unknown'];
 
+app.use(bodyParser.json({ limit: '50mb' }));
+
 app.get('/', function (req, res) {
   res.send('Hello from virus-scanner-service');
 });
 
 app.post(
   '/delta',
-  bodyParser.json({ limit: '50mb' }),
   async function (req, res) {
     try {
       const body = req.body;
@@ -168,7 +169,6 @@ app.post(
  */
 app.post(
   '/scan',
-  bodyParser.json({ limit: '50mb' }),
   async function (req, res) {
     try {
       const body = req.body;

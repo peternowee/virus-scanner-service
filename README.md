@@ -28,7 +28,7 @@ services:
     links:
       - database:database
     environment:
-      VIRUS_SCANNER_CLAMD_USER: # "root"
+      VIRUS_SCANNER_CLAMD_USER: "clamav" # See README before changing to "root".
     volumes:
       - ./data/files:/share
       - type: volume
@@ -39,12 +39,16 @@ volumes:
   virus-scanner-signatures:
 ```
 
-> Note: The ClamAV authors do not recommend running `clamd` as `root` for
-> safety reasons because ClamAV scans untrusted files that may be
-> malware. However, the file-service currently saves its files with
-> access permission for `root` only. Consider the security implications
-> for your situation before uncommenting the line to let `clamd` run as
-> `root`:
+> Note on `VIRUS_SCANNER_CLAMD_USER` (default: `"clamav"`): The ClamAV
+> authors do not recommend running `clamd` as `root` for safety reasons
+> because ClamAV scans untrusted files that may be malware.
+>
+> However, [file-service](https://github.com/mu-semtech/file-service)
+> currently saves its files with access permission for `root` only,
+> which makes them inaccessible for ClamAV running as `clamav`.
+>
+> Consider the security implications for your situation before letting
+> `clamd` run as `root` by setting:
 >
 >       VIRUS_SCANNER_CLAMD_USER: "root"
 
@@ -253,7 +257,8 @@ The following enviroment variables can be configured:
 * `LOG_INCOMING_SCAN_REQUESTS (default: "false")`: Log the requests
   received by endpoint `/scan`.
 * `VIRUS_SCANNER_CLAMD_USER (default: "clamav")`: User to run the
-  ClamAV daemon `clamd` as.
+  ClamAV daemon `clamd` as. See note on running `clamd` as `root` in
+  the Getting started-section above.
 * The environment variables recognized by
   [mu-javascript-template](https://github.com/mu-semtech/mu-javascript-template/blob/v1.7.0/README.md#environment-variables).
 
